@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>AI Drawing Generator</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            height: 100vh;
+            background: linear-gradient(135deg, #141e30, #243b55);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+        }
+
+        .container {
+            width: 800px;
+            padding: 40px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 42px;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #ff9966, #ff5e62);
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        p {
+            color: #ccc;
+        }
+
+        input {
+            width: 70%;
+            padding: 15px;
+            border-radius: 10px;
+            border: none;
+            font-size: 16px;
+            outline: none;
+            margin-top: 20px;
+        }
+
+        .generate-btn {
+            margin-top: 20px;
+            padding: 15px 35px;
+            font-size: 16px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(145deg, #ff7b00, #ff3c00);
+            color: white;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-3px);
+        }
+
+        .generate-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .suggestions button {
+            margin: 6px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: none;
+            background: linear-gradient(145deg, #00c6ff, #0072ff);
+            color: white;
+            cursor: pointer;
+        }
+
+        .result img {
+            margin-top: 30px;
+            width: 384px;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+        }
+
+        .download-btn {
+            margin-top: 15px;
+            padding: 10px 25px;
+            border-radius: 8px;
+            border: none;
+            background: linear-gradient(145deg, #28a745, #218838);
+            color: white;
+            cursor: pointer;
+        }
+
+        .loader {
+            margin-top: 20px;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>🎨 AI Drawing Generator</h1>
+        <p>Describe anything — AI will create it.</p>
+
+        <form method="post" action="/generate" id="generateForm">
+            <input type="text" name="prompt" placeholder="e.g. realistic red rose, cinematic lighting..."
+                value="{{ prompt if prompt else '' }}" required>
+            <br>
+            <button class="generate-btn" type="submit" id="generateBtn">
+                Generate Image
+            </button>
+        </form>
+
+        <!-- Loader -->
+        <div class="loader" id="loader">
+            <p>Generating Image... Please wait ⏳</p>
+        </div>
+
+        <!-- Suggestions -->
+        <div class="suggestions">
+            <p>Try Examples:</p>
+            <button type="button" onclick="fillPrompt('realistic red rose with water drops')">🌹 Rose</button>
+            <button type="button" onclick="fillPrompt('ancient warrior statue dramatic lighting')">🗿 Statue</button>
+            <button type="button" onclick="fillPrompt('pencil sketch portrait highly detailed')">✏ Sketch</button>
+            <button type="button" onclick="fillPrompt('futuristic city cinematic 4k')">🌆 Cinematic</button>
+        </div>
+
+        {% if image %}
+        <div class="result">
+            <h3>Generated Result</h3>
+            <img src="data:image/png;base64,{{ image }}" alt="Generated Image">
+            <br>
+            <a href="data:image/png;base64,{{ image }}" download="ai-image.png">
+                <button class="download-btn">Download</button>
+            </a>
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        function fillPrompt(text) {
+            document.querySelector("input[name='prompt']").value = text;
+        }
+
+        const form = document.getElementById("generateForm");
+        const btn = document.getElementById("generateBtn");
+        const loader = document.getElementById("loader");
+
+        form.addEventListener("submit", function () {
+            loader.style.display = "block";
+            btn.disabled = true;
+            btn.innerText = "Generating...";
+        });
+    </script>
+
+</body>
+
+</html> 
